@@ -62,3 +62,13 @@ export const login= async (req, res)=>{
 
 	}
 }
+
+
+ // Controller to chech if user is authenticated
+ // API endpoint to check weather the user is aunthicated or not
+
+ export const checkAuth= (req,res)=>{
+	res.json({success: true, user: req.user});
+ }
+
+ // controller to 

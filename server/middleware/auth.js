@@ -25,3 +25,4 @@ import jwt from "jsonwebtoken";
 		res.json({success: false, message: error.message});
 	}
  }
+
