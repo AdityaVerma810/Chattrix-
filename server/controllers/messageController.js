@@ -1,5 +1,6 @@
 
 
+<<<<<<< HEAD
 // //Get all user except the Logged in user
 
 // import Message from "../models/Message.js";
@@ -55,10 +56,14 @@
 
 
 
+=======
+//Get all user except the Logged in user
+>>>>>>> ef0d07806972962abbc6b7993eda4fa0703da301
 
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 
+<<<<<<< HEAD
 // Get all users except the logged-in user
 export const getUserForSidebar = async (req, res) => {
   try {
@@ -125,3 +130,29 @@ export const markMessageAsSeen= async (req, res)=>{
 	}
 
 }
+=======
+export const getUserForSidebar=async (req, res)=>{
+	try {
+		const userId= req.user._id;
+		const filterdUsers= await User.find({_id: {$ne: userId}}).select("-password");
+
+		// Count number of message not seen
+		const unseenMessages= {}
+		const promises= filterdUsers.map(async (user)=>{
+			const message= await Message.find({senderId : user._id , receiverId: userId, seen: false })
+			if(unseenMessages.length > 0){
+				unseenMessages[user._id]=messages.length;
+			}
+		})
+		await Promise.all(promises);
+		res.json({success: true, user: filterdUsers, unseenMessages})
+
+
+	} catch(error){
+		console.log(error.message);
+		res.json({success: false , message : error.message})
+
+	}
+}
+
+>>>>>>> ef0d07806972962abbc6b7993eda4fa0703da301
