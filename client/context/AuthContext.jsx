@@ -3,7 +3,7 @@ import { createContext } from "react";
 import axios from 'axios'
 
  import toast from 'react-hot-toast';
- import {io} from "socket.io-client"
+ import {io, Socket} from "socket.io-client"
 import { useEffect } from "react";
 
 const backendUrl= import.meta.env.VITE_BACKEND_URL;
@@ -54,6 +54,33 @@ axios.defaults.baseURL= backendUrl;
 		}
 	}
 
+	// Logout function to handel user logout ans socket disconnection
+
+	const logout =async ()=>{
+		localStorage.removeItem("token");
+		setToken(null);
+		setAuthUser(null);
+		setOnlineUser([]);
+		axios.defaults.headers.common["token"]= null;
+		toast.success("Logged out successfully")
+		socket.disconnect();
+	}
+
+	//Update profile function to handel user profile updates
+
+	const updateProfile= async (body)=>{
+		try{
+			const {data}= await axios.put("/api/auth/update-profile", body);
+			if(data.success){
+				setAuthUser(data.user);
+				toast.success("Profile updated successfully")
+
+			}
+		}catch (error){
+			toast.error(error.message)
+		}
+	}
+
 	//Connect socket function to handle socket connection and online users update
 	const connectSocket = (userData)=>{
 		if(!userData || socket?.connected)return;
@@ -84,7 +111,11 @@ axios.defaults.baseURL= backendUrl;
 		axios,
 		authUser,
 		onlineUser,
-		socket
+		socket,
+		login,
+		logout,
+		updateProfile
+
 	}
 
 	return (
