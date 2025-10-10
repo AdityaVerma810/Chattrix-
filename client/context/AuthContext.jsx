@@ -34,7 +34,25 @@ axios.defaults.baseURL= backendUrl;
 		}
 
 	}
-	
+	//Login function to handel user authentication and socket connection
+	const login= async (state, Credentials)=>{
+		try{
+			const {data}= await axios.post(`/api/auth/${state}`, Credentials);
+			if(data.success){
+				setAuthUser(data.userData);
+				connectSocket(data.userData);
+				axios.defaults.headers.common["token"]= data.token;
+				setToken(data.token);
+				localStorage.setItem("token", data.token)
+				toast.success(data.message)
+			}else{
+				toast.error(data.message)
+			}
+		}	catch(error){
+			toast.error(error.message)
+
+		}
+	}
 
 	//Connect socket function to handle socket connection and online users update
 	const connectSocket = (userData)=>{
@@ -70,8 +88,10 @@ axios.defaults.baseURL= backendUrl;
 	}
 
 	return (
-		<AuthContext.Provider value={value}>
-			{children}
-		</AuthContext.Provider>
-	)
- }
+  <AuthContext.Provider value={value}>
+    {children}
+  </AuthContext.Provider>
+);
+};
+
+export default AuthProvider;
